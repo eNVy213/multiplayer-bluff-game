@@ -1,9 +1,10 @@
 package test
 
 import (
-	"multiplayer-bluff-game/internal/network"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/eNVy213/multiplayer-bluff-game/internal/network"
 )
 
 func TestWebSocketConnection(t *testing.T) {

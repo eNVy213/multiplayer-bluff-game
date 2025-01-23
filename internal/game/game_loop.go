@@ -34,31 +34,39 @@ func (g *GameLoop) Start() {
 }
 
 func (g *GameLoop) Stop() {
-	g.Quit <- true
+	close(g.Quit)
 }
 
 func (g *GameLoop) ExecuteTurn() {
-	currentPlayer := &g.Table.Players[g.Table.CurrentPlayer]
+	currentPlayer := g.Table.CurrentPlayer
+
+	if currentPlayer == nil {
+		fmt.Println("No current player set")
+		return
+	}
+
 	fmt.Printf("It's %s's turn\n", currentPlayer.ID)
 
-	// Simulate player action (e.g., play a card or call bluff)
+	// Simulate player action
 	if len(currentPlayer.Hand) > 0 {
 		playedCard := currentPlayer.Hand[0]
-		err := g.Table.PlayCard(currentPlayer.ID, playedCard, playedCard.Value)
+		err := g.Table.PlayCard(currentPlayer.ID, playedCard)
 		if err != nil {
 			fmt.Printf("Error: %s\n", err.Error())
 			return
 		}
 
-		fmt.Printf("%s played %s of %s\n", currentPlayer.ID, playedCard.Value, playedCard.Suit)
+		fmt.Printf("%s played %s\n", currentPlayer.ID, playedCard)
 	} else {
 		fmt.Printf("%s has no cards left\n", currentPlayer.ID)
 	}
 
-	// Check for game end condition
+	// Check for victory condition
 	if g.CheckVictory() {
 		fmt.Printf("%s wins the game!\n", currentPlayer.ID)
 		g.Stop()
+	} else {
+		g.Table.NextPlayer()
 	}
 }
 

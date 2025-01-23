@@ -1,5 +1,7 @@
 package game
 
+import "github.com/eNVy213/multiplayer-bluff-game/internal/network"
+
 type Card struct {
 	Value string
 	Suit  string
@@ -10,7 +12,8 @@ type Player struct {
 	Hand       []Card `json:"hand"`
 	IsBluffing bool
 	Score      int
-	Name       string `json:"name"`
+	Name       string              `json:"name"`
+	Connection *network.Connection `json:"-"`
 }
 
 func NewPlayer(id string, hand []Card) *Player {

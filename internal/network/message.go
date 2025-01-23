@@ -10,8 +10,8 @@ const (
 )
 
 type Message struct {
-	Type    MessageType `json:"type"`
-	Payload interface{} `json:"payload"`
+	Type MessageType `json:"type"`
+	Data interface{} `json:"data"`
 }
 
 type PlayerActionPayload struct {

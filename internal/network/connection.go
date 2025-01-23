@@ -8,13 +8,13 @@ import (
 
 type Connection struct {
 	Conn *websocket.Conn
-	Send chan []byte
+	Send chan Message
 }
 
 func NewConnection(conn *websocket.Conn) *Connection {
 	return &Connection{
 		Conn: conn,
-		Send: make(chan []byte),
+		Send: make(chan Message, 256),
 	}
 }
 
@@ -34,15 +34,10 @@ func (c *Connection) ReadPump(handleMessage func([]byte)) {
 }
 
 func (c *Connection) WritePump() {
-	defer func() {
-		c.Conn.Close()
-	}()
-
 	for message := range c.Send {
-		err := c.Conn.WriteMessage(websocket.TextMessage, message)
-		if err != nil {
-			log.Println("Write error:", err)
+		if err := c.Conn.WriteJSON(message); err != nil {
 			break
 		}
 	}
+	c.Conn.Close()
 }
