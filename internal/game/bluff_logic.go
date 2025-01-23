@@ -60,7 +60,7 @@ func (g *BluffGame) CallBluff(playerID string) ([]string, error) {
 		return nil, errors.New("no cards to challenge")
 	}
 
-	//lastPlayer := g.Players[(g.CurrentTurn-1+len(g.Players))%len(g.Players)]
+	lastPlayer := g.Players[(g.CurrentTurn-1+len(g.Players))%len(g.Players)]
 	pile := g.Pile
 	g.Pile = []string{}
 
