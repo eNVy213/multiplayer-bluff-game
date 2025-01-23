@@ -1,0 +1,11 @@
+{
+  "server_address": ":8080",
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "user": "postgres_user",
+    "password": "postgres_password",
+    "name": "bluff_game_db"
+  },
+  "log_level": "info"
+}

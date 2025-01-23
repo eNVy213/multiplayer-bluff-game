@@ -1,0 +1,2 @@
+LOG: 2025/01/24 00:57:58 logger.go:19: Logger initialized
+LOG: 2025/01/24 00:57:58 main.go:17: Failed to load configuration: open ./config/config.json: The system cannot find the file specified.

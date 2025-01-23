@@ -18,20 +18,42 @@ type Table struct {
 	CurrentPlayer *Player `json:"current_player"`
 }
 
-func (t *Table) PlayCard(playerID string, card Card) error {
-	for _, player := range t.Players {
-		if player.ID == playerID {
-			for i, c := range player.Hand {
-				if c == card {
-					// Remove the card from the player's hand
-					player.Hand = append(player.Hand[:i], player.Hand[i+1:]...)
-					return nil
-				}
-			}
-			return errors.New("card not found in player's hand")
+type Table struct {
+	Players       []*Player `json:"players"`
+	CurrentPlayer int       `json:"current_player"` // Index of the current player
+}
+
+func (t *Table) PlayCard(playerID string, card string) error {
+	player := t.Players[t.CurrentPlayer]
+	if player.ID != playerID {
+		return errors.New("not your turn")
+	}
+
+	// Check if the player has the card
+	cardIndex := -1
+	for i, c := range player.Hand {
+		if c == card {
+			cardIndex = i
+			break
 		}
 	}
-	return errors.New("player not found")
+	if cardIndex == -1 {
+		return errors.New("card not in hand")
+	}
+
+	// Remove card from player's hand
+	player.Hand = append(player.Hand[:cardIndex], player.Hand[cardIndex+1:]...)
+
+	// Broadcast message
+	message := network.Message{
+		Type:    "PlayCard",
+		Payload: map[string]interface{}{"playerID": playerID, "card": card},
+	}
+	t.BroadcastMessage(message)
+
+	// Update turn
+	t.CurrentPlayer = (t.CurrentPlayer + 1) % len(t.Players)
+	return nil
 }
 
 func (t *Table) NextPlayer() {
@@ -97,9 +119,6 @@ func (t *Table) RemovePlayer(playerID string) {
 }
 
 func (t *Table) BroadcastMessage(message network.Message) {
-	t.Mutex.Lock()
-	defer t.Mutex.Unlock()
-
 	for _, player := range t.Players {
 		if player.Connection != nil {
 			player.Connection.Send <- message

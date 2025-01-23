@@ -1,25 +1,55 @@
-package test
+package game
 
 import (
 	"testing"
-
-	"github.com/eNVy213/multiplayer-bluff-game/internal/game"
 )
 
-func TestBluffGame(t *testing.T) {
-	gameInstance := game.NewBluffGame()
-
-	if len(gameInstance.Deck) != 52 {
-		t.Errorf("Expected deck size 52, got %d", len(gameInstance.Deck))
+func TestPlayCard(t *testing.T) {
+	players := []*Player{
+		{ID: "1", Name: "Alice", Hand: []string{"Ace of Spades", "2 of Hearts"}},
+		{ID: "2", Name: "Bob", Hand: []string{"King of Hearts"}},
 	}
 
-	player := &game.Player{ID: "player1", Name: "Test Player"}
-	err := gameInstance.AddPlayer(player)
+	table := &Table{
+		Players:       players,
+		CurrentPlayer: players[0],
+	}
+
+	err := table.PlayCard("Ace of Spades")
 	if err != nil {
-		t.Errorf("Failed to add player: %v", err)
+		t.Fatalf("Expected no error, got %v", err)
 	}
 
-	if len(gameInstance.Players) != 1 {
-		t.Errorf("Expected 1 player, got %d", len(gameInstance.Players))
+	if len(table.CurrentPlayer.Hand) != 1 {
+		t.Fatalf("Expected 1 card in Alice's hand, got %d", len(table.CurrentPlayer.Hand))
+	}
+
+	if table.CurrentPlayer != players[1] {
+		t.Fatalf("Expected current player to be Bob, got %v", table.CurrentPlayer.Name)
+	}
+}
+
+func TestPlayCard_NoCurrentPlayer(t *testing.T) {
+	table := &Table{}
+
+	err := table.PlayCard("Ace of Spades")
+	if err == nil || err.Error() != "no current player set" {
+		t.Fatalf("Expected 'no current player set' error, got %v", err)
+	}
+}
+
+func TestPlayCard_CardNotInHand(t *testing.T) {
+	players := []*Player{
+		{ID: "1", Name: "Alice", Hand: []string{"2 of Hearts"}},
+	}
+
+	table := &Table{
+		Players:       players,
+		CurrentPlayer: players[0],
+	}
+
+	err := table.PlayCard("Ace of Spades")
+	if err == nil || err.Error() != "card not in hand" {
+		t.Fatalf("Expected 'card not in hand' error, got %v", err)
 	}
 }
