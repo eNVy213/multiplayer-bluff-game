@@ -54,11 +54,12 @@ func (s *Server) BroadcastMessage(message string) {
 	}
 }
 
-func (s *Server) Start(addr string) {
+func (s *Server) Start(addr string) error {
 	http.HandleFunc("/ws", s.HandleConnections)
 	log.Println("Server starting on", addr)
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
-		log.Fatal("Error starting server:", err)
+		return err
 	}
+	return nil
 }

@@ -6,10 +6,11 @@ type Card struct {
 }
 
 type Player struct {
-	ID         string
-	Hand       []Card
+	ID         string `json:"id"`
+	Hand       []Card `json:"hand"`
 	IsBluffing bool
 	Score      int
+	Name       string `json:"name"`
 }
 
 func NewPlayer(id string, hand []Card) *Player {

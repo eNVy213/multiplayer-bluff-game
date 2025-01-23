@@ -25,10 +25,10 @@ func main() {
 	defer db.Close()
 
 	// Initialize WebSocket server
-	server := network.NewServer(cfg.ServerAddress)
+	server := network.NewServer()
 
 	utils.Logger.Printf("Starting server on %s", cfg.ServerAddress)
-	if err := server.Start(); err != nil {
+	if err := server.Start(cfg.ServerAddress); err != nil {
 		utils.Logger.Fatalf("Failed to start server: %v", err)
 	}
 }

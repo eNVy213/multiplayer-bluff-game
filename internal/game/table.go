@@ -8,11 +8,17 @@ import (
 
 type Table struct {
 	ID         string
-	Players    []*Player
+	Players    []*Player `json:"players"`
 	Mutex      sync.Mutex
 	Broadcast  chan network.Message
 	MaxPlayers int
 	GameState  *BluffGame
+	//Players       []*Player `json:"players"`
+	CurrentPlayer *Player `json:"current_player"`
+}
+
+func (t *Table) PlayCard(playerID string, card string) {
+	// Logic for playing a card
 }
 
 func NewTable(id string, maxPlayers int) *Table {
