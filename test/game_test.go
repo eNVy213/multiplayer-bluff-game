@@ -1,8 +1,9 @@
 package test
 
 import (
-	"multiplayer-bluff-game/internal/game"
 	"testing"
+
+	"github.com/eNVy213/multiplayer-bluff-game/internal/game"
 )
 
 func TestBluffGame(t *testing.T) {

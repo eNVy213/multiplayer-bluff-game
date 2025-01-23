@@ -3,7 +3,7 @@ package game
 import (
 	"sync"
 
-	"github.com/your_project/internal/network"
+	"github.com/eNVy213/multiplayer-bluff-game/internal/network"
 )
 
 type Table struct {
